@@ -1,5 +1,37 @@
 # HG-NT
 
-Official reference code repository for the paper: **"HG-NT"** (Anonymous submission for peer review).
+Official reference code repository for the paper: **"HG-NT"** .
 
 This repository contains the complete workflow implementation of our proposed method, mainly including data preprocessing, model training, and interpretability analysis scripts across different datasets.
+
+---
+
+## 1. Pretrained Model Preparation
+
+In the feature extraction phase, this project fundamentally relies on **Nucleotide-Transformer**, a genomic foundation large language model developed by the **InstaDeepAI** team.
+
+### Model Information
+* **Model Name (repo_id)**: `InstaDeepAI/nucleotide-transformer-2.5b-multi-species`
+* **Model Version**: 2.5B (2.5 billion parameters) Multi-Species Pretrained Masked Language Model. This version was pretrained on massive cross-species genomic sequences, providing exceptionally strong multimodal sequence embedding capabilities.
+* **Official GitHub Repository**: [instadeepai/nucleotide-transformer](https://github.com/instadeepai/nucleotide-transformer)
+* **Official Hugging Face Page**: [InstaDeepAI/nucleotide-transformer-2.5b-multi-species](https://huggingface.co/InstaDeepAI/nucleotide-transformer-2.5b-multi-species)
+
+---
+
+## 2. Pipeline Workflow & Script Overview
+
+### 🦞 Crayfish Workflow
+The following core scripts are specifically designed and adapted for the Crayfish dataset:
+
+* `tf_process.py`: Parses the Motif matching results scanned by FIMO and the Transcription Factor (TF) bridge table to construct the initial transcriptional regulatory network edge tensors.
+* `gcn_process.py`: Computes large matrices based on GPU acceleration, utilizes the RNA-seq TPM expression matrix to construct the co-expression network, filters out NaNs, and splits the dataset into training/testing sets to generate standard labels.
+* `align_network.py`: Takes the absolute coordinate file `gene_id_index.txt` (consisting of 46,476 anchor genes) as the baseline to implement rigorous filtering and absolute coordinate alignment for the multi-track graph networks mentioned above.
+* `go_to_embedding.py`: Extracts the **6000bp** core physical sequence composed of the central gene along with its upstream/downstream regions, dynamically feeds it into the `Nucleotide-Transformer-2.5B` model, and transforms it into a 2560-dimensional dense feature tensor named `crayfish_embeddings.pt`.
+* `train_xr_xiaolongxia.py`: Supports repeated ablation experiments across multiple random seeds (e.g., `--seeds 42 123 789`). It evaluates and compares M1 (pure sequence MLP baseline), M2 (unified graph fusion), and M3 (multi-graph weighted sum via Softmax-normalized learnable weights architecture).
+* `xiaorong_net_xiaolongxia.py`: A fine-grained ablation script focusing on network sources. It contrasts M3a (dual-track full graph fusion), M3b (retaining only the TF regulatory network), and M3c (retaining only the GCN co-expression network).
+* `Interpretion_neighbor.py`: Based on the ISM (In-silico Mutagenesis) concept, this script quantitatively evaluates the regulatory contributions of the graph structure by iteratively masking neighbor nodes in the network, ultimately outputting reports on high-frequency core regulatory neighbors.
+* `Interpretion_sequence.py`: Performs single-nucleotide resolution sequence ISM analysis. It uses a sliding window to dynamically obscure the 6000bp sequence. In combination with the trained optimal M3 model, it calculates gene-level regulatory importance curves, automatically generates cumulative contribution heatmaps, and captures highly significant motifs to save them in standard FASTA format.
+
+### 👥 Human & Mouse Workflow (Pending)
+*(The datasets and associated scripts for this section are currently being processed and will be uploaded in future updates)*
+* ```
