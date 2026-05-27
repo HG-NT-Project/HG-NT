@@ -44,3 +44,9 @@ The following scripts implement a comprehensive cross-species, multi-track graph
 * `train_xr_human_mouse.py`: The core pipeline execution script that conducts comprehensive multi-seed ablation experiments (running 5 random seeds to report mean and standard deviation). It evaluates and cross-checks three distinct architectures: M1 (Base Sequence MLP), M2 (Unified Graph Fusion), and M3 (Multi-Graph Weighted Sum with Softmax-normalized learnable fusion weights).
 * `xiaorong_net_human_mouse.py`: An advanced network-source ablation套件 optimized for high-throughput GPU training. It features tokenized tensor-lookups to eliminate slow CPU loops, and systematically dissects the performance contributions across finer graph variations (from dual-track up to the full three-track PPI+TF+GCN fusion architectures).
 * `Interpretion_neighbor.py`: An integrated script combining M3 training and network-level In-silico Mutagenesis (ISM) analysis. Following model convergence, it isolates highly expressed, accurately predicted target genes and iteratively masks individual neighbor nodes with global means to quantitatively identify the top 50 core regulatory neighbors.
+
+* ## 📊 Data Download
+
+All data files for this project, including **processed feature data** (large language model offline embeddings, three-track network topology tensors, physically sliced sequences, etc.) and **raw biological data** (genome sequences and expression matrices for human, mouse, and crayfish), are fully hosted on Hugging Face. You can access and download them directly via the following link:
+
+* **Repository Link**: `https://huggingface.co/datasets/HG-NT/HG-NT/tree/main`
